@@ -7,8 +7,8 @@
 using json = nlohmann::json;
 
 int main() {
-	json sim_info;
-	std::cin >> sim_info;
+    json sim_info;
+    std::cin >> sim_info;
 
     omp::EquityCalculator eq;
 
@@ -21,7 +21,15 @@ int main() {
     std::string dead_input = sim_info["dead"];
     uint64_t dead = omp::CardRange::getCardMask(dead_input);
 
-    eq.start(ranges, board, dead);
+    double stdErrMargin = 0.001; // stop when standard error below 0.1%
+    double updateInterval = 0.1; // runs the callback every 0.1s
+    unsigned threads = 4; // max hardware parallelism
+    auto callback = [&eq](const omp::EquityCalculator::Results& results) {
+        if (results.time > 3) // Stop after 3s
+            eq.stop();
+    };
+    eq.start(ranges, board, dead, false, stdErrMargin,
+             callback, updateInterval, threads);
     eq.wait();
     auto results = eq.getResults();
 
@@ -42,31 +50,5 @@ int main() {
 
     std::cout << output.dump(2) << std::endl;
 
-    // double stdErrMargin = 2e-5; // stop when standard error below 0.002%
-    // auto callback = [&eq](const omp::EquityCalculator::Results& results) {
-    //     std::cout << results.equity[0] << " " << 100 * results.progress
-    //             << " " << 1e-6 * results.intervalSpeed << std::endl;
-    //     if (results.time > 5) // Stop after 5s
-    //         eq.stop();
-    // };
-
-    // double updateInterval = 0.25; // Callback called every 0.25s.
-    // unsigned threads = 0; // max hardware parallelism (default)
-    // eq.start(ranges, board, dead, false, stdErrMargin,
-    // 		 callback, updateInterval, threads);
-    // eq.wait();
-    // auto r = eq.getResults();
-
-
-    // std::cout << std::endl << r.equity[0] << " " << r.equity[1]
-    // 	      << " " << r.equity[2] << std::endl;
-
-    // std::cout << r.wins[0] << " " << r.wins[1] << " "
-    // 		  << r.wins[2] << std::endl;
-
-    // std::cout << r.hands << " " << r.time << " " << 1e-6 * r.speed
-    // 		  << " " << r.stdev << std::endl;
-
-
-	return 0;
+    return 0;
 }
