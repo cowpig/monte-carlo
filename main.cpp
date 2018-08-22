@@ -33,7 +33,14 @@ int main() {
     eq.wait();
     auto results = eq.getResults();
 
+    // std::vector<std::vector<std::array<uint8_t,2>>> ranges_combos;
+    // auto get_combos = [](const omp::CardRange &rng) { return rng.combinations(); };
+    // std::transform(ranges.begin(), ranges.end(), ranges_combos.begin(), get_combos);
+
     json res_json;
+    // res_json["ranges"] = ranges_combos;
+    res_json["board"] = board;
+    res_json["dead"] = dead;
     res_json["equity"] = results.equity;
     res_json["players"] = results.players;
     res_json["wins"] = results.wins;
