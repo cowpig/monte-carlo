@@ -28,7 +28,8 @@ int main() {
         if (results.time > 3) // Stop after 3s
             eq.stop();
     };
-    eq.start(ranges, board, dead, false, stdErrMargin,
+    // omp::AnalysisType analysis_type = omp::AnalysisType::monte_carlo;
+    eq.start(ranges, board, dead, false, false, stdErrMargin,
              callback, updateInterval, threads);
     eq.wait();
     auto results = eq.getResults();
