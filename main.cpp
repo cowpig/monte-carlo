@@ -3,6 +3,7 @@
 #include <vector>
 #include "dependencies/nlohmann/json.hpp"
 #include "dependencies/OMPEval/omp/EquityCalculator.h"
+#include "dependencies/OMPEval/omp/CardRange.h"
 
 using json = nlohmann::json;
 
@@ -21,15 +22,16 @@ int main() {
     std::string dead_input = sim_info["dead"];
     uint64_t dead = omp::CardRange::getCardMask(dead_input);
 
+    bool recordHandWins = !sim_info["recordHandwins"].is_null() && sim_info["recordHandwins"];
     double stdErrMargin = 0.001; // stop when standard error below 0.1%
     double updateInterval = 0.1; // runs the callback every 0.1s
-    unsigned threads = 4; // max hardware parallelism
     auto callback = [&eq](const omp::EquityCalculator::Results& results) {
         if (results.time > 3) // Stop after 3s
             eq.stop();
     };
+    unsigned threads = 0; // hardware default
     // omp::AnalysisType analysis_type = omp::AnalysisType::monte_carlo;
-    eq.start(ranges, board, dead, false, false, stdErrMargin,
+    eq.start(ranges, board, dead, false, recordHandWins, stdErrMargin,
              callback, updateInterval, threads);
     eq.wait();
     auto results = eq.getResults();
@@ -51,6 +53,14 @@ int main() {
     res_json["stdev"] = results.stdev;
     res_json["evaluations"] = results.evaluations;
     res_json["finished"] = results.finished;
+
+    // hand values
+    res_json["hand_values"] = json({});
+    for (auto handWin : results.handWinCounts) {
+        std::string hand_str = omp::CardRange::handMaskToStr(handWin.first);
+        auto handWinCount = handWin.second;
+        res_json["hand_values"][hand_str] = handWinCount.wins / (double)handWinCount.n_evals;
+    }
 
     json output;
     output["input"] = sim_info;
