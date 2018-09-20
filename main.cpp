@@ -22,7 +22,7 @@ int main() {
     std::string dead_input = sim_info["dead"];
     uint64_t dead = omp::CardRange::getCardMask(dead_input);
 
-    bool recordHandWins = !sim_info["recordHandwins"].is_null() && sim_info["recordHandwins"];
+    bool recordHandWins = !sim_info["recordHandWins"].is_null() && sim_info["recordHandWins"];
     double stdErrMargin = 0.001; // stop when standard error below 0.1%
     double updateInterval = 0.1; // runs the callback every 0.1s
     auto callback = [&eq](const omp::EquityCalculator::Results& results) {
