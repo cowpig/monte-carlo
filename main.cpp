@@ -53,13 +53,16 @@ int main() {
     res_json["stdev"] = results.stdev;
     res_json["evaluations"] = results.evaluations;
     res_json["finished"] = results.finished;
+    res_json["recordHandWins"] = results.recordHandWins;
 
     // hand values
     res_json["hand_values"] = json({});
-    for (auto handWin : results.handWinCounts) {
-        std::string hand_str = omp::CardRange::handMaskToStr(handWin.first);
-        auto handWinCount = handWin.second;
-        res_json["hand_values"][hand_str] = handWinCount.wins / (double)handWinCount.n_evals;
+    if (recordHandWins) {
+        for (auto handWin : results.handWinCounts) {
+            std::string hand_str = omp::CardRange::handMaskToStr(handWin.first);
+            auto handWinCount = handWin.second;
+            res_json["hand_values"][hand_str] = handWinCount.wins / (double)handWinCount.n_evals;
+        }
     }
 
     json output;
