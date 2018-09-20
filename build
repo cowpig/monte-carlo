@@ -1,16 +1,19 @@
 #!/bin/bash
 
-case "$1" in
-        test)
-            g++ -O3 -std=c++11 -Wall -Wpedantic -pthread dependencies/OMPEval/test.cpp -o test dependencies/OMPEval/lib/ompeval.a && ./test
-            ;;
+# cd dependencies/OMPEval
+# make
+# cd ../..
 
-        all)
-			g++ -O3 -std=c++11 -Wall -Wpedantic -pthread dependencies/OMPEval/test.cpp -o test dependencies/OMPEval/lib/ompeval.a
-			g++ -O3 -std=c++11 -Wall -Wpedantic -pthread main.cpp -o main dependencies/OMPEval/lib/ompeval.a
-            ;;
+# case "$1" in
+#     test)
+#         g++ -O3 -std=c++11 -Wall -Wpedantic -pthread dependencies/OMPEval/test.cpp -o test dependencies/OMPEval/lib/ompeval.a && ./test
+#         ;;
 
-        *)
-            g++ -O3 -std=c++11 -Wall -Wpedantic -pthread main.cpp -o main dependencies/OMPEval/lib/ompeval.a && cat example.json | ./main
+#     all)
+# 		g++ -O3 -std=c++11 -Wall -Wpedantic -pthread dependencies/OMPEval/test.cpp -o test dependencies/OMPEval/lib/ompeval.a
+# 		g++ -O3 -std=c++11 -Wall -Wpedantic -pthread main.cpp -o main dependencies/OMPEval/lib/ompeval.a
+#         ;;
 
-esac
+#     *)
+g++ -O3 -std=c++11 -Wall -Wpedantic -pthread main.cpp -o main dependencies/OMPEval/lib/ompeval.a && cat example3.json | ./main
+# esac
