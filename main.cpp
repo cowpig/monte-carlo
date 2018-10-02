@@ -7,10 +7,7 @@
 
 using json = nlohmann::json;
 
-int main() {
-    json sim_info;
-    std::cin >> sim_info;
-
+void monteCarloSimulation(json& sim_info) {
     omp::EquityCalculator eq;
 
     std::vector<std::string> range_input = sim_info["ranges"];
@@ -35,10 +32,6 @@ int main() {
              callback, updateInterval, threads);
     eq.wait();
     auto results = eq.getResults();
-
-    // std::vector<std::vector<std::array<uint8_t,2>>> ranges_combos;
-    // auto get_combos = [](const omp::CardRange &rng) { return rng.combinations(); };
-    // std::transform(ranges.begin(), ranges.end(), ranges_combos.begin(), get_combos);
 
     json res_json;
     // res_json["ranges"] = ranges_combos;
@@ -70,6 +63,20 @@ int main() {
     output["results"] = res_json;
 
     std::cout << output.dump(2) << std::endl;
+}
+
+int main() {
+    json sim_info;
+    while (true) {
+        std::cin >> sim_info;
+
+        bool exit = !sim_info["exit"].is_null() && sim_info["exit"];
+        if (exit) {
+            break;
+        } else {
+            monteCarloSimulation(sim_info);
+        }
+    }
 
     return 0;
 }
