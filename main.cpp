@@ -21,7 +21,7 @@ void monteCarloSimulation(json& sim_info) {
 
     bool recordHandWins = !sim_info["recordHandWins"].is_null() && sim_info["recordHandWins"];
     double stdErrMargin = 0.001; // stop when standard error below 0.1%
-    double updateInterval = 0.1; // runs the callback every 0.1s
+    double updateInterval = 0.01; // runs the callback every 10ms
     auto callback = [&eq](const omp::EquityCalculator::Results& results) {
         if (results.time > 3) // Stop after 3s
             eq.stop();
